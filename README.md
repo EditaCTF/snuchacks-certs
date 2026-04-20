@@ -64,6 +64,12 @@ To adjust, edit the `SIG_BOX` constant at the top of `sign.py`.
 
 PDF page dimensions (landscape A4): ~842 pts × ~595 pts
 
+## Certificate Files
+
+The certificate PDFs are hosted on SharePoint. Download the zips from the link below and extract them into the `pdf/` subfolder:
+
+**[Download Certificates](https://ssneduin-my.sharepoint.com/:f:/g/personal/vijayan23110015_snuchennai_edu_in/IgCo3vYF6x7qTb_MjPGE2BeHAdNVTKnET5ejZ4VGMAZgqUk?e=D9BRde)**
+
 ## Dependencies
 
 - **pymupdf** — image stamping
