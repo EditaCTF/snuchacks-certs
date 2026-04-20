@@ -1,0 +1,131 @@
+===============================================
+  SNUC HACKS CERTIFICATE SIGNER
+===============================================
+
+Prerequisites:
+    pip install -r requirements.txt
+
+Usage:
+    python sign.py -i ./pdf -o ./signed \
+                   -p certificate.p12 \
+                   -s PASSWORD \
+                   -f sign.png
+
+Required arguments:
+  -i, --input-dir     Directory containing PDF subfolders
+                      (participants/, finalists/, volunteers/)
+  -o, --output-dir    Output directory for signed PDFs
+  -p, --p12-file      Path to P12/PKCS12 signing certificate
+  -s, --p12-password   Password for P12 certificate
+  -f, --sign-file      Path to sign.png (visible stamp image)
+
+
+Optional:
+  --platform linux|darwin|windows
+                      Force platform (auto-detected by default)
+
+Examples:
+    # Basic usage
+    python sign.py -i ./pdf -o ./signed \
+                   -p certificate.p12 -s mypassword -f sign.png
+
+    # With explicit platform
+    python sign.py -i ./pdf -o ./signed \
+                   -p certificate.p12 -s mypassword -f sign.png \
+                   --platform linux
+
+
+===============================================
+  FILE REQUIREMENTS
+===============================================
+
+sign.png:
+    - PNG format, recommended ~400x120 px
+    - Positioned via SIG_BOX coordinates (see below)
+
+certificate.p12:
+    - PKCS#12 format signing certificate
+    - Must have password (passed via --p12-password)
+    - Contains private key + certificate + CA chain
+
+Output structure:
+    <output-dir>/
+    ├── participants/   (697 PDFs)
+    ├── finalists/      (97 PDFs)
+    └── volunteers/      (27 PDFs)
+
+===============================================
+  SIG_BOX — STAMP POSITION
+===============================================
+
+Coordinates (x, y, width, height) in PDF points.
+y=0 = bottom of page.
+
+
+Default: SIG_BOX = (140, 410, 150, 50)
+
+To adjust, edit the SIG_BOX constant at the top of sign.py:
+    SIG_BOX = (x, y, width, height)
+
+PDF page dimensions (landscape A4):
+    Width:  ~842 pts
+    Height: ~595 pts
+
+===============================================
+  VIRTUAL ENVIRONMENT (Recommended)
+===============================================
+
+Using a virtual environment is recommended to avoid
+system-wide package conflicts.
+
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+#   macOS/Linux:
+source venv/bin/activate
+#   Windows:
+venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the signer
+python sign.py -i ./pdf -o ./signed \
+               -p certificate.p12 \
+               -s PASSWORD \
+               -f sign.png
+
+# Deactivate when done
+deactivate
+
+===============================================
+  DEPENDENCIES
+===============================================
+
+pymupdf      — image stamping (page.insert_image)
+pypdf        — PDF manipulation, incremental writing
+endesive     — CMS/PKCS#7 cryptographic signing
+pillow       — image dimension checking
+cryptography — P12 certificate loading
+
+All installed via: pip install -r requirements.txt
+
+===============================================
+  TROUBLESHOOTING
+===============================================
+
+"Could not deserialize PKCS12 data"
+    → Wrong --p12-password. Check for extra spaces/newlines.
+
+"sign.png not found"
+    → Verify -f path is correct and file exists.
+
+
+"pip install failed"
+    → On macOS/Linux: try pip install --break-system-packages
+    → On Windows: run as Administrator or use virtual environment.
+
+
+"SIG_BOX position is wrong"
+    → Adjust SIG_BOX tuple at top of sign.py and re-run.

@@ -1,0 +1,5 @@
+pymupdf
+pypdf
+endesive
+pillow
+cryptography
