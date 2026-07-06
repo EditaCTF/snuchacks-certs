@@ -1,92 +1,25 @@
 # SNUC Hacks Certificate Signer
 
-Signs participant, finalist, and volunteer PDFs with a visible stamp image and PKCS#7 cryptographic signature.
-
-
-## Prerequisites
+Stamps a signature PNG onto every PDF in `pdf/`, then embeds a PKCS#7 signature with your `.p12`.
 
 ```bash
 pip install -r requirements.txt
+python sign.py -i pdf -o signed -p certificate.p12 -s PASSWORD -f sign.png
 ```
 
+`SIG_BOX = (140, 410, 150, 50)` at the top of `sign.py` controls stamp position (PDF points, `y=0` = bottom). Adjust if the stamp lands off-target.
 
-## Usage
+## Two-signatory workflow
 
-```bash
-python sign.py -i ./pdf -o ./signed \
-              -p certificate.p12 \
-              -s PASSWORD \
-              -f sign.png
-```
+For two stamps + one digital signature (Faculty A → Faculty B), check out the [`two-stage-signer`](../../tree/two-stage-signer) branch.
 
-### Required Arguments
+## Certificate PDFs
 
-| Argument | Description |
-|----------|-------------|
-| `-i, --input-dir` | Directory containing PDF subfolders (`participants/`, `finalists/`, `volunteers/`) |
-| `-o, --output-dir` | Output directory for signed PDFs |
-| `-p, --p12-file` | Path to P12/PKCS12 signing certificate |
-| `-s, --p12-password` | Password for P12 certificate |
-| `-f, --sign-file` | Path to `sign.png` (visible stamp image) |
+Download and extract into `pdf/`:
 
-### Optional
-
-`--platform linux|darwin|windows` — Force platform (auto-detected by default)
-
-## File Requirements
-
-**sign.png**
-- PNG format, recommended ~400x120 px
-- Positioned via `SIG_BOX` coordinates
-
-**certificate.p12**
-- PKCS#12 format signing certificate
-- Must have a password (passed via `--p12-password`)
-- Contains private key + certificate + CA chain
-
-## Output Structure
-
-```
-<output-dir>/
-├── participants/   (697 PDFs)
-├── finalists/      (97 PDFs)
-└── volunteers/      (27 PDFs)
-```
-
-## SIG_BOX — Stamp Position
-
-Coordinates `(x, y, width, height)` in PDF points. `y=0` = bottom of page.
-
-Default: `SIG_BOX = (140, 410, 150, 50)`
-
-
-To adjust, edit the `SIG_BOX` constant at the top of `sign.py`.
-
-PDF page dimensions (landscape A4): ~842 pts × ~595 pts
-
-## Certificate Files
-
-The certificate PDFs are hosted on SharePoint. Download the zips from the link below and extract them into the `pdf/` subfolder:
-
-**[Download Certificates](https://ssneduin-my.sharepoint.com/:f:/g/personal/vijayan23110015_snuchennai_edu_in/IgCo3vYF6x7qTb_MjPGE2BeHAdNVTKnET5ejZ4VGMAZgqUk?e=D9BRde)**
-
-## Dependencies
-
-- **pymupdf** — image stamping
-- **pypdf** — PDF manipulation
-- **endesive** — CMS/PKCS#7 cryptographic signing
-- **pillow** — image dimension checking
-- **cryptography** — P12 certificate loading
+**[SNUC Hacks certificate zips (SharePoint)](https://ssneduin-my.sharepoint.com/:f:/g/personal/vijayan23110015_snuchennai_edu_in/IgCo3vYF6x7qTb_MjPGE2BeHAdNVTKnET5ejZ4VGMAZgqUk?e=D9BRde)**
 
 ## Troubleshooting
 
-**"Could not deserialize PKCS12 data"**
-→ Wrong `--p12-password`. Check for extra spaces/newlines.
-
-
-**"sign.png not found"**
-→ Verify `-f` path is correct and the file exists.
-
-
-**"SIG_BOX position is wrong"**
-→ Adjust `SIG_BOX` tuple at the top of `sign.py` and re-run.
+- **"Could not deserialize PKCS12 data"** → wrong `--p12-password`.
+- **`pip install endesive` fails on Windows with "Visual C++ 14.0 required"** → `pip install --no-deps endesive && pip install asn1crypto oscrypto python-dateutil` (pykcs11 is optional, only for HSM/smartcard signing).
