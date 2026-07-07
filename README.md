@@ -1,25 +1,58 @@
 # SNUC Hacks Certificate Signer
 
-Stamps a signature PNG onto every PDF in `pdf/`, then embeds a PKCS#7 signature with your `.p12`.
+Adds **Santhi Ma'am's** signature (visible stamp + PKCS#7) to certificate PDFs that already have **Padmavathi Ma'am's** stamp applied.
+
+## Prerequisites
 
 ```bash
 pip install -r requirements.txt
-python sign.py -i pdf -o signed -p certificate.p12 -s PASSWORD -f sign.png
 ```
 
-`SIG_BOX = (140, 410, 150, 50)` at the top of `sign.py` controls stamp position (PDF points, `y=0` = bottom). Adjust if the stamp lands off-target.
+## Usage
 
-## Two-signatory workflow
+```bash
+python sign.py -i staged -o signed \
+              -f santhi.png \
+              -p certificate.p12 -s PASSWORD
+```
 
-For two stamps + one digital signature (Faculty A → Faculty B), check out the [`two-stage-signer`](../../tree/two-stage-signer) branch.
+Expected layout in `-i` and `-o`:
 
-## Certificate PDFs
+```
+staged/                      signed/
+├── participants/   ->       ├── participants/
+├── finalists/      ->       ├── finalists/
+└── volunteers/     ->       └── volunteers/
+```
 
-Download and extract into `pdf/`:
+Each PDF in `staged/` gets Santhi's stamp + signature and lands in the matching subfolder of `signed/`.
 
-**[SNUC Hacks certificate zips (SharePoint)](https://ssneduin-my.sharepoint.com/:f:/g/personal/vijayan23110015_snuchennai_edu_in/IgCo3vYF6x7qTb_MjPGE2BeHAdNVTKnET5ejZ4VGMAZgqUk?e=D9BRde)**
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `-i, --input-dir` | yes | Folder with `participants/`, `finalists/`, `volunteers/` PDFs (already stamped by stage 1) |
+| `-o, --output-dir` | yes | Output folder for signed PDFs |
+| `-f, --sign-file` | yes | Santhi's signature PNG or JPG |
+| `-p, --p12-file` | yes | Santhi's `.p12` / PKCS#12 signing certificate |
+| `-s, --p12-password` | yes | Password for the P12 |
+| `--field-name` | no | Signature field name (default: `Sig1`) |
+| `--reason` | no | Override the `/Reason` string |
+| `--location` | no | Override the `/Location` string |
+
+## Stamp Position
+
+`SIG_BOX = (130, 132, 170, 50)` at the top of `sign.py` controls the stamp position. Coordinates are in PDF points with `y=0` at the page bottom. Default places the stamp above "DR. SANTHI NATARAJAN"'s dash on the LEFT side of the SNUC Hacks '26 certificate (landscape A4, 842×595 pt). To re-calibrate for a different template, find the dash line above the faculty name in your PDF and adjust the rectangle.
+
+## Windows
+
+- Activate venv with `venv\Scripts\activate` (not `source venv/bin/activate`).
+- `python sign.py ...` (no `python3`).
+- Single-line invocations work in cmd.exe — multi-line needs `^` instead of `\`.
+- If `pip install endesive` fails with "Visual C++ 14.0 required": `pip install --no-deps endesive && pip install asn1crypto oscrypto python-dateutil` (pykcs11 is optional).
 
 ## Troubleshooting
 
-- **"Could not deserialize PKCS12 data"** → wrong `--p12-password`.
-- **`pip install endesive` fails on Windows with "Visual C++ 14.0 required"** → `pip install --no-deps endesive && pip install asn1crypto oscrypto python-dateutil` (pykcs11 is optional, only for HSM/smartcard signing).
+- **"Could not deserialize PKCS12 data"** — wrong `--p12-password`.
+- **"P12 file not found" / "sign image not found"** — check the `-p` / `-f` path.
+- **Stamp lands in the wrong place** — adjust `SIG_BOX` at the top of `sign.py`.

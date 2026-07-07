@@ -2,12 +2,21 @@
   SNUC HACKS CERTIFICATE SIGNER
 ===============================================
 
+Adds Santhi Ma'am's signature (visible stamp + PKCS#7) to cert PDFs
+that already have Padmavathi Ma'am's stamp.
+
     pip install -r requirements.txt
-    python sign.py -i pdf -o signed -p certificate.p12 -s PASSWORD -f sign.png
+    python sign.py -i staged -o signed \
+                   -f santhi.png -p certificate.p12 -s PASSWORD
 
-Stamp position: edit `SIG_BOX` at the top of sign.py (PDF points, y=0 = bottom).
+Input and output folders expect participants/, finalists/, volunteers/
+subdirectories. Adjust SIG_BOX at the top of sign.py to re-position
+the stamp (PDF points, y=0 = bottom).
 
-Two-signatory workflow (Faculty A → Faculty B with separate stamps + PKCS#7):
-see the `two-stage-signer` branch.
+Windows notes:
+- venv\Scripts\activate (not source venv/bin/activate)
+- Single-line invocations in cmd.exe
+- If endesive install fails: pip install --no-deps endesive
+  then pip install asn1crypto oscrypto python-dateutil
 
 Cert PDFs: https://ssneduin-my.sharepoint.com/:f:/g/personal/vijayan23110015_snuchennai_edu_in/IgCo3vYF6x7qTb_MjPGE2BeHAdNVTKnET5ejZ4VGMAZgqUk?e=D9BRde
