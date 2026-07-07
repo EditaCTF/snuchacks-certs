@@ -44,6 +44,12 @@ Each PDF in `staged/` gets Santhi's stamp + signature and lands in the matching 
 
 `SIG_BOX = (130, 132, 170, 50)` at the top of `sign.py` controls the stamp position. Coordinates are in PDF points with `y=0` at the page bottom. Default places the stamp above "DR. SANTHI NATARAJAN"'s dash on the LEFT side of the SNUC Hacks '26 certificate (landscape A4, 842×595 pt). To re-calibrate for a different template, find the dash line above the faculty name in your PDF and adjust the rectangle.
 
+## Certificate PDFs (stage 1 input)
+
+The Padmavathi-stamped PDFs come from stage 1. The raw certificate PDFs are hosted on SharePoint:
+
+**[SNUC Hacks certificate zips](https://ssneduin-my.sharepoint.com/:u:/g/personal/vijayan23110015_snuchennai_edu_in/IQAsJJmsMZBAS5agKPWM0wg_AZ81c7rtE6uCPwH3bbMsS94?e=DBw7qP)**
+
 ## Windows
 
 - Activate venv with `venv\Scripts\activate` (not `source venv/bin/activate`).

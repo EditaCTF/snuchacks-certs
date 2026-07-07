@@ -19,4 +19,4 @@ Windows notes:
 - If endesive install fails: pip install --no-deps endesive
   then pip install asn1crypto oscrypto python-dateutil
 
-Cert PDFs: https://ssneduin-my.sharepoint.com/:f:/g/personal/vijayan23110015_snuchennai_edu_in/IgCo3vYF6x7qTb_MjPGE2BeHAdNVTKnET5ejZ4VGMAZgqUk?e=D9BRde
+Cert PDFs: https://ssneduin-my.sharepoint.com/:u:/g/personal/vijayan23110015_snuchennai_edu_in/IQAsJJmsMZBAS5agKPWM0wg_AZ81c7rtE6uCPwH3bbMsS94?e=DBw7qP
